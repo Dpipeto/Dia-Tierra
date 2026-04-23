@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memoria: Agua y Árboles — Preescolar a 3°</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #1a9ed4; --green: #3ab554; --yellow: #f5c842; --orange: #f08030;
+    --bg: #e8f7ff; --card-size: 140px; --gap: 14px; --shadow: rgba(0,0,0,0.12);
+  }
+  body { font-family: 'Nunito', sans-serif; background: var(--bg); min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+  header {
+    width: 100%; background: linear-gradient(135deg, #1a9ed4 0%, #3ab554 100%);
+    color: white; text-align: center; padding: 2rem 1rem 2.5rem; position: relative;
+  }
+  header::after {
+    content: ''; display: block; height: 20px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 20'%3E%3Cpath d='M0,10 C200,20 400,0 600,10 C800,20 1000,0 1200,10 L1200,20 L0,20 Z' fill='%23e8f7ff'/%3E%3C/svg%3E") center/cover no-repeat;
+    position: absolute; bottom: 0; left: 0; right: 0;
+  }
+  .badge { display: inline-block; background: rgba(255,255,255,0.25); border-radius: 20px; padding: 4px 16px; font-size: 12px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.06em; }
+  header h1 { font-size: clamp(24px, 5vw, 40px); font-weight: 900; margin-bottom: 4px; text-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+  header p { font-size: 15px; opacity: 0.85; }
+  .header-icons { font-size: 26px; margin-top: 10px; letter-spacing: 6px; }
+
+  /* ── Nav ── */
+  #nav-bar { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; padding: 1.25rem 1rem 0; width: 100%; max-width: 640px; }
+  .nav-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: white; border: 2px solid #b0d8f0; border-radius: 22px;
+    padding: 9px 20px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700;
+    cursor: pointer; color: #334; box-shadow: 0 2px 8px var(--shadow); transition: all 0.2s;
+  }
+  .nav-btn:hover { background: var(--blue); border-color: var(--blue); color: white; transform: translateY(-1px); }
+  .nav-btn.current { background: var(--blue); border-color: var(--blue); color: white; cursor: default; }
+  .nav-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .nav-btn.current .nav-dot, .nav-btn:hover .nav-dot { background: rgba(255,255,255,0.75); }
+
+  /* ── Register ── */
+  #register-section {
+    background: white; border-radius: 20px; box-shadow: 0 4px 18px var(--shadow);
+    padding: 1.5rem 1.75rem 1.25rem; margin: 1.25rem 1rem 0;
+    max-width: 580px; width: calc(100% - 2rem); border-top: 5px solid var(--blue);
+  }
+  #register-section h3 { font-size: 15px; font-weight: 900; color: #223; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 11px; font-weight: 900; color: #99a; text-transform: uppercase; letter-spacing: 0.07em; }
+  .form-group input, .form-group select {
+    border: 2px solid #dde; border-radius: 10px; padding: 8px 12px;
+    font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; color: #334;
+    outline: none; transition: border-color 0.2s; background: #fafcff;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--blue); }
+  #btn-register {
+    margin-top: 12px; width: 100%; background: var(--green); color: white; border: none;
+    border-radius: 12px; padding: 10px; font-family: 'Nunito', sans-serif;
+    font-size: 14px; font-weight: 900; cursor: pointer; transition: background 0.2s, transform 0.1s;
+  }
+  #btn-register:hover { background: #279140; transform: scale(1.02); }
+  #player-display {
+    display: none; margin-top: 12px; background: #e6f7ff; border-radius: 12px;
+    padding: 9px 14px; font-size: 13px; font-weight: 700; color: #1060a0;
+    align-items: center; gap: 10px;
+  }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; flex-shrink: 0; }
+
+  /* ── Save status ── */
+  #save-status {
+    display: none; margin-top: 8px;
+    font-size: 12px; font-weight: 700; padding: 6px 12px;
+    border-radius: 8px; text-align: center;
+  }
+  #save-status.saving { background: #fff8e1; color: #9a6f00; display: block; }
+  #save-status.ok     { background: #e6f9ea; color: #1a6b2a; display: block; }
+  #save-status.error  { background: #fdecea; color: #b71c1c; display: block; }
+
+  /* ── Lock ── */
+  #lock-notice {
+    background: #fff3cd; border: 2px dashed var(--yellow); border-radius: 14px;
+    padding: 12px 20px; margin: 1rem auto; max-width: 500px; width: calc(100% - 2rem);
+    font-size: 14px; font-weight: 700; color: #7a5c00; text-align: center;
+  }
+  #lock-notice.hidden { display: none; }
+
+  /* ── Game area ── */
+  #game-area { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  #game-area.locked { opacity: 0.38; pointer-events: none; user-select: none; filter: blur(0.5px); }
+
+  #stats { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; padding: 1.25rem 1rem 0.5rem; }
+  .stat { background: white; border-radius: 16px; padding: 10px 22px; text-align: center; box-shadow: 0 3px 10px var(--shadow); min-width: 90px; }
+  .stat-label { font-size: 10px; color: #88a; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+  .stat-val { font-size: 26px; font-weight: 900; color: #334; }
+
+  #legend { display: flex; gap: 18px; justify-content: center; padding: 0.75rem 1rem 0; flex-wrap: wrap; }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #667; font-weight: 700; }
+  .leg-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  #board { display: grid; grid-template-columns: repeat(4, var(--card-size)); gap: var(--gap); justify-content: center; padding: 1rem; }
+
+  .card { width: var(--card-size); height: var(--card-size); cursor: pointer; perspective: 900px; }
+  .card-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(.4,0,.2,1); border-radius: 18px; }
+  .card.flipped .card-inner, .card.matched .card-inner { transform: rotateY(180deg); }
+  .card-front, .card-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; }
+  .card-front { background: white; border: 3px solid #b8dff0; box-shadow: 0 4px 14px var(--shadow); }
+  .card-front-q { font-size: 52px; line-height: 1; user-select: none; }
+  .card-back { background: white; transform: rotateY(180deg); box-shadow: 0 4px 14px var(--shadow); text-align: center; border: 3px solid #b8dff0; }
+  .card-back.type-q { border-top: 6px solid var(--blue); }
+  .card-back.type-a { border-top: 6px solid var(--green); }
+  .card-back .icon { font-size: 28px; line-height: 1; }
+  .card-back .term { font-size: 11px; font-weight: 700; color: #334; line-height: 1.35; }
+  .card.matched .card-back { background: #e6f9ea; border-color: var(--green); border-top-color: var(--green); }
+  .card.matched .card-back .term { color: #1a6b2a; }
+  .card.wrong .card-inner { animation: shake 0.4s ease; }
+  @keyframes shake { 0%,100%{transform:rotateY(180deg)} 25%{transform:rotateY(180deg) translateX(-7px)} 75%{transform:rotateY(180deg) translateX(7px)} }
+
+  #msg { text-align: center; min-height: 30px; font-size: 15px; font-weight: 700; color: #667; padding: 0 1rem; }
+  #msg.correct { color: var(--green); font-size: 16px; }
+  #msg.wrong-msg { color: var(--orange); }
+
+  #tip-box { background: white; border-left: 5px solid var(--yellow); border-radius: 12px; padding: 12px 16px; margin: 0.75rem auto; max-width: 580px; width: calc(100% - 2rem); font-size: 13px; font-weight: 700; color: #556; box-shadow: 0 2px 8px var(--shadow); min-height: 44px; }
+  #tip-box span { color: #334; }
+
+  #btn-restart { display: block; margin: 0.5rem auto 2rem; background: var(--blue); color: white; border: none; border-radius: 30px; padding: 11px 36px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(26,158,212,0.4); transition: transform 0.15s, background 0.2s; }
+  #btn-restart:hover { background: #1487b8; transform: scale(1.04); }
+
+  /* ── Win overlay ── */
+  #win-overlay { display: none; position: fixed; inset: 0; background: rgba(0,60,20,0.68); z-index: 100; align-items: center; justify-content: center; }
+  #win-overlay.show { display: flex; }
+  .win-card { background: white; border-radius: 24px; padding: 2.5rem 2rem 2rem; text-align: center; max-width: 390px; width: 92%; animation: popIn 0.45s cubic-bezier(.34,1.56,.64,1) both; }
+  @keyframes popIn { from{transform:scale(0.6);opacity:0} to{transform:scale(1);opacity:1} }
+  .win-card .trophy { font-size: 64px; margin-bottom: 8px; }
+  .win-card h2 { font-size: 26px; font-weight: 900; color: var(--green); margin-bottom: 4px; }
+  .win-player-name { font-size: 14px; font-weight: 900; color: var(--blue); margin-bottom: 6px; }
+  .win-card p { font-size: 14px; color: #778; margin-bottom: 14px; }
+  .win-stats { display: flex; gap: 12px; justify-content: center; margin-bottom: 16px; }
+  .win-stat { background: #e6f9ea; border-radius: 14px; padding: 10px 18px; }
+  .win-stat-n { font-size: 24px; font-weight: 900; color: var(--green); }
+  .win-stat-l { font-size: 10px; color: #889; font-weight: 700; }
+  #win-save-status { font-size: 12px; font-weight: 700; min-height: 20px; margin-bottom: 12px; }
+  .btn-play-again { background: var(--green); color: white; border: none; border-radius: 30px; padding: 12px 38px; font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(58,181,84,0.4); transition: background 0.2s; }
+  .btn-play-again:hover { background: #2a8e40; }
+
+  @media (max-width: 620px) {
+    :root { --card-size: 110px; --gap: 10px; }
+    .form-row.three { grid-template-columns: 1fr 1fr; }
+    .card-back .icon { font-size: 22px; } .card-back .term { font-size: 10px; } .card-front-q { font-size: 38px; }
+  }
+  @media (max-width: 470px) {
+    :root { --card-size: 86px; --gap: 7px; }
+    .card-front-q { font-size: 30px; }
+    .form-row, .form-row.three { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">🌟 Preescolar · 1° · 2° · 3° 🌟</div>
+  <h1>💧 Agua y Árboles 🌳</h1>
+  <p>Une la pregunta con la respuesta correcta</p>
+  <div class="header-icons">🌧️ 🌿 🐦 🌱 💦</div>
+</header>
+
+<div id="nav-bar">
+  <button class="nav-btn current" onclick="void(0)">
+    <div class="nav-dot"></div> Preescolar a 3° — estás aquí
+  </button>
+  <button class="nav-btn" onclick="window.location.href='memoria_3ro_5to.html'">
+    Ir a 3° – 5° &nbsp;🎓 →
+  </button>
+</div>
+
+<div id="register-section">
+  <h3>👤 Registro del estudiante</h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" id="inp-nombre" placeholder="Tu nombre" maxlength="30">
+    </div>
+    <div class="form-group">
+      <label>Apellido</label>
+      <input type="text" id="inp-apellido" placeholder="Tu apellido" maxlength="30">
+    </div>
+  </div>
+  <div class="form-row three">
+    <div class="form-group">
+      <label>Grado</label>
+      <select id="inp-grado">
+        <option value="">Selecciona</option>
+        <option>Preescolar</option>
+        <option>1°</option>
+        <option>2°</option>
+      </select>
+    </div>
+    <div class="form-group" style="grid-column: span 2;">
+      <label>Grupo / Salón</label>
+      <input type="text" id="inp-grupo" placeholder="Ej: A, B, 301..." maxlength="12">
+    </div>
+  </div>
+  <button id="btn-register" onclick="registrar()">¡Listo, a jugar! 🎮</button>
+  <div id="player-display">
+    <div class="avatar" id="avatar-initials">?</div>
+    <span id="player-info-text"></span>
+  </div>
+</div>
+
+<div id="lock-notice">🔒 Completa tu registro para desbloquear el juego</div>
+
+<div id="game-area" class="locked">
+  <div id="stats">
+    <div class="stat"><div class="stat-label">Intentos</div><div class="stat-val" id="s-intentos">0</div></div>
+    <div class="stat"><div class="stat-label">Pares</div><div class="stat-val" id="s-pares">0/10</div></div>
+    <div class="stat"><div class="stat-label">Tiempo</div><div class="stat-val" id="s-tiempo">0s</div></div>
+  </div>
+  <div id="legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div> Pregunta</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--green)"></div> Respuesta</div>
+    <div class="leg"><div class="leg-dot" style="background:#4CAF50"></div> ¡Correcto!</div>
+  </div>
+  <div id="board"></div>
+  <div id="msg">Primero regístrate para jugar</div>
+  <div id="tip-box"><span>💡 Sabías que:</span> Los árboles son el hogar de miles de animales como pájaros, ardillas e insectos.</div>
+  <button id="btn-restart">↺ Jugar de nuevo</button>
+</div>
+
+<div id="win-overlay">
+  <div class="win-card">
+    <div class="trophy">🏆</div>
+    <h2>¡Lo lograste!</h2>
+    <div class="win-player-name" id="w-player"></div>
+    <p>¡Eres un súper guardián del agua y los árboles!</p>
+    <div class="win-stats">
+      <div class="win-stat"><div class="win-stat-n" id="w-tiempo">—</div><div class="win-stat-l">Tiempo</div></div>
+      <div class="win-stat"><div class="win-stat-n" id="w-intentos">—</div><div class="win-stat-l">Intentos</div></div>
+    </div>
+    <div id="win-save-status">⏳ Guardando resultado...</div>
+    <p style="font-size:13px;margin-bottom:18px;">💧 Cierra la llave · 🌳 Siembra un árbol · 🌍 Cuida la Tierra</p>
+    <button class="btn-play-again" id="btn-win-restart">¡Jugar otra vez!</button>
+  </div>
+</div>
+
+<script>
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw72DLWIBovF_anZzx41w3D2G53fAJHvYC8LRrBQ1xC_kdstq3bQtdB-qg0lFkBWmFq/exec';
+
+const PAIRS = [
+  { id:1,  q:"¿De qué color es el agua limpia?",         qIcon:"💧", a:"Sin color (incolora)",  aIcon:"✨", tip:"El agua pura no tiene color, sabor ni olor." },
+  { id:2,  q:"¿Qué debemos tomar todos los días?",        qIcon:"🥤", a:"Agua",                   aIcon:"💦", tip:"El cuerpo humano es 60% agua. ¡Hay que tomar mínimo 6 vasos al día!" },
+  { id:3,  q:"¿Qué nos dan los árboles para respirar?",   qIcon:"🌬️", a:"Oxígeno",                aIcon:"🫧", tip:"Un árbol grande puede producir el oxígeno que necesitan 4 personas." },
+  { id:4,  q:"¿Cómo se llama el agua que cae del cielo?", qIcon:"🌧️", a:"Lluvia",                 aIcon:"☔", tip:"La lluvia es parte del ciclo del agua: sube como vapor y baja como lluvia." },
+  { id:5,  q:"¿Qué parte del árbol está bajo la tierra?", qIcon:"🌳", a:"La raíz",                aIcon:"🌱", tip:"Las raíces absorben agua y nutrientes del suelo para alimentar al árbol." },
+  { id:6,  q:"Al no usar el agua, ¿qué debemos cerrar?",  qIcon:"🚿", a:"La llave del agua",      aIcon:"🔒", tip:"Cerrar la llave mientras nos enjabonamos ahorra hasta 12 litros de agua." },
+  { id:7,  q:"¿Los árboles crecen mejor con o sin agua?", qIcon:"🌤️", a:"Con agua",               aIcon:"💧", tip:"El agua ayuda a los árboles a fabricar su alimento con la luz del sol." },
+  { id:8,  q:"¿Quiénes viven en los árboles?",            qIcon:"🏡", a:"Los pájaros",             aIcon:"🐦", tip:"Los árboles son el hogar de más de la mitad de las especies del mundo." },
+  { id:9,  q:"¿Podemos tomar agua del mar directamente?", qIcon:"🌊", a:"No, tiene mucha sal",    aIcon:"🚫", tip:"El agua del mar tiene sal que nos enfermaría. Necesita tratamiento especial." },
+  { id:10, q:"¿Qué hacemos para cuidar los árboles?",     qIcon:"🌍", a:"Sembrarlos",              aIcon:"🌿", tip:"Sembrar árboles ayuda a limpiar el aire, el suelo y el agua de nuestro planeta." },
+];
+const TIPS = [
+  "🌳 Un árbol adulto puede absorber hasta 150 litros de agua del suelo cada día.",
+  "💧 El 70% de tu cuerpo es agua. ¡Necesitas agua para pensar, correr y crecer!",
+  "🐦 Más de 300 especies de pájaros viven en los bosques colombianos.",
+  "🌧️ Colombia tiene una de las lluvias más abundantes del mundo gracias a sus selvas.",
+  "🌱 Un árbol puede vivir cientos de años si lo cuidamos bien.",
+  "💦 Cerrar el grifo mientras te cepillas los dientes ahorra hasta 12 litros de agua.",
+];
+
+let flipped=[], matched=[], locked=false, attempts=0, startTime=null, timerInterval=null, playerData=null;
+const TOTAL = PAIRS.length;
+
+function getNow() {
+  const now = new Date();
+  const fecha = now.toLocaleDateString('es-CO', { day:'2-digit', month:'2-digit', year:'numeric' });
+  const hora  = now.toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' });
+  return { fecha, hora };
+}
+
+function enviarASheets(datos) {
+  const wss = document.getElementById('win-save-status');
+  wss.textContent = '⏳ Guardando resultado...';
+  wss.style.color = '#9a6f00';
+  fetch(SHEETS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(datos)
+  })
+  .then(() => {
+    wss.textContent = '✅ ¡Resultado guardado en la planilla!';
+    wss.style.color = '#1a6b2a';
+  })
+  .catch(() => {
+    wss.textContent = '⚠️ Sin conexión — resultado no guardado';
+    wss.style.color = '#b71c1c';
+  });
+}
+
+function registrar() {
+  const nombre   = document.getElementById('inp-nombre').value.trim();
+  const apellido = document.getElementById('inp-apellido').value.trim();
+  const grado    = document.getElementById('inp-grado').value;
+  const grupo    = document.getElementById('inp-grupo').value.trim();
+  if (!nombre || !apellido || !grado) { alert('Por favor completa nombre, apellido y grado 😊'); return; }
+  playerData = { nombre, apellido, grado, grupo };
+  const initials = (nombre[0]||'') + (apellido[0]||'');
+  document.getElementById('avatar-initials').textContent = initials.toUpperCase();
+  const grupoText = grupo ? ` · Grupo ${grupo}` : '';
+  document.getElementById('player-info-text').textContent = `${nombre} ${apellido} · ${grado}${grupoText}`;
+  document.getElementById('player-display').style.display = 'flex';
+  document.getElementById('btn-register').textContent = '✏️ Editar datos';
+  document.getElementById('game-area').classList.remove('locked');
+  document.getElementById('lock-notice').classList.add('hidden');
+  startGame();
+}
+
+function shuffle(a) { return [...a].sort(() => Math.random() - 0.5); }
+
+function buildCards() {
+  const cards = [];
+  PAIRS.forEach(p => {
+    cards.push({ uid: p.id+'Q', pairId: p.id, type: 'q', label: p.q, icon: p.qIcon, tip: p.tip });
+    cards.push({ uid: p.id+'A', pairId: p.id, type: 'a', label: p.a, icon: p.aIcon, tip: p.tip });
+  });
+  return shuffle(cards);
+}
+
+function startGame() {
+  if (!playerData) return;
+  clearInterval(timerInterval);
+  flipped=[]; matched=[]; locked=false; attempts=0; startTime=null;
+  document.getElementById('s-intentos').textContent = '0';
+  document.getElementById('s-pares').textContent    = '0/'+TOTAL;
+  document.getElementById('s-tiempo').textContent   = '0s';
+  const msg = document.getElementById('msg'); msg.className=''; msg.textContent='¡Voltea dos tarjetas para emparejarlas!';
+  document.getElementById('win-overlay').classList.remove('show');
+  setTip(TIPS[Math.floor(Math.random()*TIPS.length)]);
+  const board = document.getElementById('board'); board.innerHTML='';
+  buildCards().forEach(c => board.appendChild(makeCard(c)));
+}
+
+function setTip(t) { document.getElementById('tip-box').innerHTML = '<span>💡 Sabías que:</span> ' + t; }
+
+function makeCard(c) {
+  const div = document.createElement('div'); div.className = 'card';
+  div.innerHTML = `<div class="card-inner">
+    <div class="card-front"><div class="card-front-q">${c.type==='q'?'❓':'💬'}</div></div>
+    <div class="card-back type-${c.type}">
+      <div class="icon">${c.icon}</div>
+      <div class="term">${c.label}</div>
+    </div>
+  </div>`;
+  div.addEventListener('click', () => onFlip(div, c));
+  return div;
+}
+
+function onFlip(div, c) {
+  if (locked || flipped.length===2 || div.classList.contains('flipped') || div.classList.contains('matched')) return;
+  if (!startTime) {
+    startTime = Date.now();
+    timerInterval = setInterval(() => {
+      document.getElementById('s-tiempo').textContent = Math.round((Date.now()-startTime)/1000) + 's';
+    }, 500);
+  }
+  div.classList.add('flipped'); flipped.push({div, c});
+  if (flipped.length === 2) setTimeout(checkPair, 350);
+}
+
+function checkPair() {
+  locked = true; attempts++;
+  document.getElementById('s-intentos').textContent = attempts;
+  const [a, b] = flipped; const msg = document.getElementById('msg');
+  if (a.c.pairId === b.c.pairId && a.c.uid !== b.c.uid) {
+    a.div.classList.add('matched'); b.div.classList.add('matched');
+    matched.push(a.c.pairId);
+    document.getElementById('s-pares').textContent = matched.length+'/'+TOTAL;
+    msg.className='correct'; msg.textContent = '¡Muy bien! ' + a.c.tip;
+    setTip(a.c.tip); flipped=[]; locked=false;
+    if (matched.length === TOTAL) setTimeout(winGame, 700);
+  } else {
+    msg.className='wrong-msg'; msg.textContent = '¡Casi! Intenta de nuevo 😊';
+    a.div.classList.add('wrong'); b.div.classList.add('wrong');
+    setTimeout(() => {
+      a.div.classList.remove('flipped','wrong'); b.div.classList.remove('flipped','wrong');
+      flipped=[]; locked=false; msg.className=''; msg.textContent='¡Voltea dos tarjetas para emparejarlas!';
+    }, 1000);
+  }
+}
+
+function winGame() {
+  clearInterval(timerInterval);
+  const secs = Math.round((Date.now()-startTime)/1000);
+  const p = playerData;
+  const grupoText = p.grupo ? ` · Grupo ${p.grupo}` : '';
+  document.getElementById('w-tiempo').textContent   = secs + 's';
+  document.getElementById('w-intentos').textContent = attempts;
+  document.getElementById('w-player').textContent   = `${p.nombre} ${p.apellido} · ${p.grado}${grupoText}`;
+  document.getElementById('win-overlay').classList.add('show');
+
+  const { fecha, hora } = getNow();
+  const calificacion = attempts <= TOTAL+2 ? '⭐⭐⭐ Perfecto' : attempts <= TOTAL*2 ? '⭐⭐ Muy bien' : '⭐ Buen esfuerzo';
+  enviarASheets({
+    fecha, hora,
+    nombre:      p.nombre,
+    apellido:    p.apellido,
+    grado:       p.grado,
+    grupo:       p.grupo || '—',
+    nivel:       'Preescolar a 3°',
+    tiempo:      secs,
+    intentos:    attempts,
+    calificacion
+  });
+}
+
+document.getElementById('btn-restart').addEventListener('click', startGame);
+document.getElementById('btn-win-restart').addEventListener('click', () => {
+  document.getElementById('win-overlay').classList.remove('show');
+  startGame();
+});
+</script>
+</body>
+</html>
